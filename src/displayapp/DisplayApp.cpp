@@ -29,6 +29,7 @@
 #include "displayapp/screens/Steps.h"
 #include "displayapp/screens/PassKey.h"
 #include "displayapp/screens/Error.h"
+#include "displayapp/screens/TrackTime.h"
 
 #include "drivers/Cst816s.h"
 #include "drivers/St7789.h"
@@ -73,6 +74,7 @@ DisplayApp::DisplayApp(Drivers::St7789& lcd,
                        Pinetime::Controllers::MotorController& motorController,
                        Pinetime::Controllers::MotionController& motionController,
                        Pinetime::Controllers::TimerController& timerController,
+                       Pinetime::Controllers::TimeTrackerController& timeTrackerController,
                        Pinetime::Controllers::AlarmController& alarmController,
                        Pinetime::Controllers::BrightnessController& brightnessController,
                        Pinetime::Controllers::TouchHandler& touchHandler)
@@ -89,6 +91,7 @@ DisplayApp::DisplayApp(Drivers::St7789& lcd,
     motorController {motorController},
     motionController {motionController},
     timerController {timerController},
+    timeTrackerController {timeTrackerController},
     alarmController {alarmController},
     brightnessController {brightnessController},
     touchHandler {touchHandler} {
@@ -370,7 +373,6 @@ void DisplayApp::LoadApp(Apps app, DisplayApp::FullRefreshDirections direction) 
     case Apps::Alarm:
       currentScreen = std::make_unique<Screens::Alarm>(this, alarmController, settingsController.GetClockType(), *systemTask);
       break;
-
     // Settings
     case Apps::QuickSettings:
       currentScreen = std::make_unique<Screens::QuickSettings>(this,
@@ -447,6 +449,9 @@ void DisplayApp::LoadApp(Apps app, DisplayApp::FullRefreshDirections direction) 
       break;
     case Apps::StopWatch:
       currentScreen = std::make_unique<Screens::StopWatch>(this, *systemTask);
+      break;
+    case Apps::TrackTime:
+      currentScreen = std::make_unique<Screens::TrackTime>(this, *systemTask, timeTrackerController);
       break;
     case Apps::Twos:
       currentScreen = std::make_unique<Screens::Twos>(this);
